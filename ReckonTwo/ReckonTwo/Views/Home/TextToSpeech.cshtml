@@ -35,7 +35,7 @@
         if (val)
             if (val.length >= 2) {
                 $.ajax({
-                    url: "/Home/ConvertSpeechToText",
+                    url: "/Home/ConvertTextToSpeech",
                     type: "POST",
                     data: JSON.stringify({ text: val }),
                     dataType: "json",

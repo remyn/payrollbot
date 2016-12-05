@@ -19,7 +19,7 @@ namespace ReckonTwo.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> ConvertSpeechToText(string text)
+        public async Task<ActionResult> ConvertTextToSpeech(string text)
         {
             await api.StartTextToSpeechAPI(api, text);
 
