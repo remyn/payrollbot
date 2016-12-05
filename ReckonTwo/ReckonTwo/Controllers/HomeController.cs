@@ -1,22 +1,29 @@
-﻿using System.Threading.Tasks;
-using ReckonTwo.Helpers;
+﻿using ReckonTwo.Helpers;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 
 namespace ReckonTwo.Controllers
 {
     public class HomeController : Controller
     {
+        TextToSpeechApiHelper api = new TextToSpeechApiHelper("bc9f4dfe324e474bb37b8f2480f1b7a4");
+
         public ActionResult Index()
         {
             return View();
         }
 
-        public async Task<ActionResult> TextToSpeech()
+        public ActionResult TextToSpeech()
         {
-            var api = new TextToSpeechApiHelper("bc9f4dfe324e474bb37b8f2480f1b7a4");
-            await api.StartTextToSpeechAPI(api);
-
             return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ConvertSpeechToText(string text)
+        {
+            await api.StartTextToSpeechAPI(api, text);
+
+            return Json(new { status = "Success", message = "Success" });
         }
 
         public ActionResult SpeechToText()

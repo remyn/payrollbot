@@ -21,19 +21,20 @@
             <br/>
             <h4>Enter some text...</h4>
             <div class="col-lg-8">
-                <textarea id="txtInput" class="form-control" rows="6" cols="8" placeholder="Start typing..." required onchange="callApi(this.value);"></textarea>
-                <br/>
-                <button class="btn btn-primary" onclick="clearField();">Clear</button>
+                <textarea class="form-control" rows="6" cols="8" placeholder="Start typing..." required onchange="callApi(this.value);"></textarea>
             </div>
+            @*<button class="btn-default" onclick="clearField();">Clear</button>*@
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    
-    function callApi(val) {
+
+    function callApi(val)
+    {
         if (val)
-            if (val.length >= 2) {
+            if (val.length >= 2)
+            {
                 $.ajax({
                     url: "/Home/ConvertSpeechToText",
                     type: "POST",
@@ -43,16 +44,11 @@
                     contentType: "application/json; charset=utf-8",
                     //success: function (data) {
                     //},
-                    error: function() {
+                    error: function () {
                         alert("An error has occured!");
                     }
                 });
             }
-    }
-
-    function clearField() {
-        $("#txtInput").val('');
-        $("#txtInput").focus();
     }
 
 </script>

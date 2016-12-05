@@ -134,7 +134,7 @@ namespace ReckonTwo.Helpers
             Console.WriteLine("Unable to complete the TTS request: [{0}]", e.ToString());
         }
 
-        public async Task StartTextToSpeechAPI(TextToSpeechApiHelper auth)
+        public async Task StartTextToSpeechAPI(TextToSpeechApiHelper auth, string typedText)
         {
             Console.WriteLine("Starting Authtentication");
             string accessToken;
@@ -167,7 +167,7 @@ namespace ReckonTwo.Helpers
             {
                 RequestUri = new Uri(requestUri),
                 // Text to be spoken.
-                Text = "Hi, how are you doing?  Morné still has to finish this development, watch this space. Go Payroll!",
+                Text = typedText,
                 VoiceType = Gender.Female,
                 // Refer to the documentation for complete list of supported locales.
                 Locale = "en-US",
