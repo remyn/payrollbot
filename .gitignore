@@ -18,5 +18,5 @@ bld/
 [Oo]bj/
 
 # NuGet Packages Directory
-packages/*
+packages/
 
