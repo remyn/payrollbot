@@ -117,7 +117,7 @@ namespace ReckonTwo.Helpers
         {
             Console.WriteLine(args.EventData);
 
-            // For SoundPlayer to be able to play the wav file, it has to be encoded in PCM.
+            // For SoundPlayer to be able to play the wav file, it has to be encoded in PCM (Pulse Code Modulation).
             // Use output audio format AudioOutputFormat.Riff16Khz16BitMonoPcm to do that.
             SoundPlayer player = new SoundPlayer(args.EventData);
             player.PlaySync();
@@ -132,9 +132,11 @@ namespace ReckonTwo.Helpers
         static void ErrorHandler(object sender, GenericEventArgs<Exception> e)
         {
             Console.WriteLine("Unable to complete the TTS request: [{0}]", e.ToString());
+
+            throw new Exception("Audio exception: " + e.ToString());
         }
 
-        public async Task StartTextToSpeechAPI(TextToSpeechApiHelper auth, string typedText)
+        public async Task<byte[]> StartTextToSpeechAPI(TextToSpeechApiHelper auth, string typedText)
         {
             Console.WriteLine("Starting Authtentication");
             string accessToken;
@@ -143,8 +145,6 @@ namespace ReckonTwo.Helpers
             // Free: https://www.microsoft.com/cognitive-services/en-us/subscriptions?productId=/products/Bing.Speech.Preview
             // Paid: https://portal.azure.com/#create/Microsoft.CognitiveServices/apitype/Bing.Speech/pricingtier/S0
             // payroll-speech: https://portal.azure.com/#resource/subscriptions/2c064161-a19f-40bc-b358-5586f3de65df/resourceGroups/rg-payroll/providers/Microsoft.CognitiveServices/accounts/payroll-speech/keys
-
-            //TextToSpeechApiHelper auth = new TextToSpeechApiHelper("bc9f4dfe324e474bb37b8f2480f1b7a4");
 
             try
             {
@@ -156,7 +156,7 @@ namespace ReckonTwo.Helpers
                 Console.WriteLine("Failed authentication.");
                 Console.WriteLine(ex.ToString());
                 Console.WriteLine(ex.Message);
-                return;
+                return null;
             }
 
             Console.WriteLine("Starting TTSSample request code execution.");
@@ -182,6 +182,8 @@ namespace ReckonTwo.Helpers
             cortana.OnAudioAvailable += PlayAudio;
             cortana.OnError += ErrorHandler;
             cortana.Speak(CancellationToken.None).Wait();
+
+            return cortana.AudioStreamBytes;
         }
 
     }
@@ -254,6 +256,8 @@ namespace ReckonTwo.Helpers
         /// </summary>
         private InputOptions inputOptions;
 
+        public byte[] AudioStreamBytes { get; set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="Synthesize"/> class.
         /// </summary>
@@ -280,45 +284,70 @@ namespace ReckonTwo.Helpers
         /// <returns>A Task</returns>
         public Task Speak(CancellationToken cancellationToken)
         {
-            var cookieContainer = new CookieContainer();
-            var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
-            var client = new HttpClient(handler);
-
-            foreach (var header in this.inputOptions.Headers)
+            try
             {
-                client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
-            }
+                var cookieContainer = new CookieContainer();
+                var handler = new HttpClientHandler() { CookieContainer = cookieContainer };
+                var client = new HttpClient(handler);
 
-            var genderValue = "";
-            switch (this.inputOptions.VoiceType)
-            {
-                case Gender.Male:
-                    genderValue = "Male";
-                    break;
-                case Gender.Female:
-                default:
-                    genderValue = "Female";
-                    break;
+                foreach (var header in this.inputOptions.Headers)
+                {
+                    client.DefaultRequestHeaders.TryAddWithoutValidation(header.Key, header.Value);
+                }
 
-            }
+                var genderValue = "";
+                switch (this.inputOptions.VoiceType)
+                {
+                    case Gender.Male:
+                        genderValue = "Male";
+                        break;
+                    case Gender.Female:
+                    default:
+                        genderValue = "Female";
+                        break;
 
-            var request = new HttpRequestMessage(HttpMethod.Post, this.inputOptions.RequestUri)
-            {
-                Content = new StringContent(String.Format(SsmlTemplate, this.inputOptions.Locale, genderValue, this.inputOptions.VoiceName, this.inputOptions.Text))
-            };
+                }
 
-            var httpTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-            Console.WriteLine("Response status code: [{0}]", httpTask.Result.StatusCode);
+                var request = new HttpRequestMessage(HttpMethod.Post, this.inputOptions.RequestUri)
+                {
+                    Content = new StringContent(String.Format(SsmlTemplate, this.inputOptions.Locale, genderValue, this.inputOptions.VoiceName, this.inputOptions.Text))
+                };
 
-            var saveTask = httpTask.ContinueWith(
-                async (responseMessage, token) =>
+                var httpTask = client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+                Console.WriteLine("Response status code: [{0}]", httpTask.Result.StatusCode);
+
+                var saveTask = httpTask.ContinueWith(async (responseMessage, token) =>
                 {
                     try
                     {
                         if (responseMessage.IsCompleted && responseMessage.Result != null && responseMessage.Result.IsSuccessStatusCode)
                         {
-
+                            //Content-Type: audio/x-wav
                             var httpStream = await responseMessage.Result.Content.ReadAsStreamAsync().ConfigureAwait(false);
+
+                            //convert the audio stream to a byte array which gets saved as a .mp3 in the apps folder 
+                            //then gets referenced in the <audio> control on the page's javascript
+                            try
+                            {
+                                using (MemoryStream ms = new MemoryStream())
+                                {
+                                    AudioStreamBytes = null;
+                                    int count = 0;
+                                    do
+                                    {
+                                        byte[] buf = new byte[1024];
+                                        count = httpStream.Read(buf, 0, 1024);
+                                        ms.Write(buf, 0, count);
+                                    } while (httpStream.CanRead && count > 0);
+
+                                    AudioStreamBytes = ms.ToArray();
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                //swollow
+                            }
+
                             this.AudioAvailable(new GenericEventArgs<Stream>(httpStream));
                         }
                         else
@@ -338,11 +367,17 @@ namespace ReckonTwo.Helpers
                         handler.Dispose();
                     }
                 },
-                TaskContinuationOptions.AttachedToParent,
-                cancellationToken);
+                    TaskContinuationOptions.AttachedToParent,
+                    cancellationToken);
 
-            return saveTask;
+                return saveTask;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Speak exception: " + e.ToString());
+            }
         }
+
 
         /// <summary>
         /// Called when a TTS requst has been successfully completed and audio is available.
@@ -353,6 +388,10 @@ namespace ReckonTwo.Helpers
             if (handler != null)
             {
                 handler(this, e);
+            }
+            else
+            {
+                throw new Exception("Audio not Available");
             }
         }
 

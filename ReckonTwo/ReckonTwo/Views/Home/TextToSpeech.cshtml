@@ -1,4 +1,4 @@
-﻿  
+﻿
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -18,19 +18,20 @@
                 <li>The JSON Web Token has an expiry time of 10 minutes so we renew it every 9 minutes</li>
                 <li>The maximum amount of audio returned for a given request must not exceed 15 seconds</li>
             </ul>
-            <br/>
+            <br />
+            <audio autoplay id="audioControl"></audio>
             <h4>Enter some text...</h4>
             <div class="col-lg-8">
                 <textarea id="txtInput" class="form-control" rows="6" cols="8" placeholder="Start typing..." required onchange="callApi(this.value);"></textarea>
-                <br/>
-                <button class="btn btn-primary" onclick="clearField();">Clear</button>
+                @*<br/>
+                    <button class="btn btn-primary" onclick="clearField();">Clear</button>*@
             </div>
         </div>
     </div>
 </div>
 
 <script type="text/javascript">
-    
+
     function callApi(val) {
         if (val)
             if (val.length >= 2) {
@@ -40,11 +41,23 @@
                     data: JSON.stringify({ text: val }),
                     dataType: "json",
                     async: true,
-                    contentType: "application/json; charset=utf-8",
-                    //success: function (data) {
-                    //},
-                    error: function() {
-                        alert("An error has occured!");
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (filePath) {
+                        var audio = document.getElementById("audioControl");
+
+                        audio.src = filePath;
+                        console.log(filePath);
+                        audio.load();
+                        audio.play();
+
+                        clearField();
+                    },
+                    error: function (xhr, status) {
+                        var err = "Error " + " " + status;
+                        if (xhr.responseText && xhr.responseText[0] === "{")
+                            err = JSON.parse(xhr.responseText).Message;
+
+                        console.log(err);
                     }
                 });
             }
