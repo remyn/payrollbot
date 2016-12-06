@@ -1,0 +1,28 @@
+﻿
+@model  ReckonTwo.Models.Chat
+
+@using (Html.BeginForm("BotDirect", "Home", FormMethod.Post))
+{
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Bot Direct</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="../">Home</a>
+                </li>
+                <li class="active">Bot Direct</li>
+            </ol>
+             <br />
+            <h4>Hello: [Anonymous]</h4>
+            <div class="col-lg-8">
+                @Html.TextBoxFor(m => m.ChatMessage, new { style = "width:600px" })
+                <input type="submit" value="Send" />
+            </div>
+            <div class="col-lg-8">
+                @Html.Raw(Model.ChatResponse)
+            </div>
+        </div>
+    </div>
+</div>
+}
