@@ -117,7 +117,7 @@ namespace ReckonTwo.Controllers
         [HttpPost]
         public async Task<ActionResult> ConvertTextToSpeech(string text)
         {
-            TextToSpeechApiHelper _speechApi = new TextToSpeechApiHelper(_speechApiKey);
+            var _speechApi = new SpeechApiHelper(_speechApiKey);
 
             var audioStreamBytes = await _speechApi.StartTextToSpeechAPI(_speechApi, text);
 
@@ -159,6 +159,9 @@ namespace ReckonTwo.Controllers
 
         public ActionResult SpeechToText()
         {
+            //var _speechApi = new SpeechApiHelper(_speechApiKey);
+            //var resultText = await _speechApi.StartSpeechToTextAPI(_speechApi, new byte[]);
+
             return View();
         }
 
