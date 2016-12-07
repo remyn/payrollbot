@@ -18,14 +18,13 @@
                 <li>The JSON Web Token has an expiry time of 10 minutes so we renew it every 9 minutes</li>
                 <li>The maximum amount of audio returned for a given request must not exceed 15 seconds</li>
             </ul>
-            <br />
             <audio autoplay id="audioControl"></audio>
             <h4>Enter some text...</h4>
             <div class="col-lg-8">
                 <textarea id="txtInput" class="form-control" rows="6" cols="8" placeholder="Start typing..." required onchange="callApi(this.value);"></textarea>
-                @*<br/>
-                    <button class="btn btn-primary" onclick="clearField();">Clear</button>*@
+                <hr />
             </div>
+            <img src="~/Content/Pricing.png" class="img-responsive img-rounded" />
         </div>
     </div>
 </div>
