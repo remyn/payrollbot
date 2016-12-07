@@ -77,33 +77,43 @@ namespace ReckonTwo.Helpers
 
         private string HttpPost(string accessUri, string apiKey)
         {
-            // Prepare OAuth request 
-            WebRequest webRequest = WebRequest.Create(accessUri);
-            webRequest.Method = "POST";
-            webRequest.ContentLength = 0;
-            webRequest.Headers["Ocp-Apim-Subscription-Key"] = apiKey;
-
-            using (WebResponse webResponse = webRequest.GetResponse())
+            try
             {
-                using (Stream stream = webResponse.GetResponseStream())
+                // Prepare OAuth request 
+                WebRequest webRequest = WebRequest.Create(accessUri);
+                webRequest.Method = "POST";
+                webRequest.ContentLength = 0;
+                webRequest.Headers["Ocp-Apim-Subscription-Key"] = apiKey;
+
+                using (WebResponse webResponse = webRequest.GetResponse())
                 {
-                    using (MemoryStream ms = new MemoryStream())
+                    using (Stream stream = webResponse.GetResponseStream())
                     {
-                        byte[] waveBytes = null;
-                        int count = 0;
-                        do
+                        using (MemoryStream ms = new MemoryStream())
                         {
-                            byte[] buf = new byte[1024];
-                            count = stream.Read(buf, 0, 1024);
-                            ms.Write(buf, 0, count);
-                        } while (stream.CanRead && count > 0);
+                            byte[] waveBytes = null;
+                            int count = 0;
+                            do
+                            {
+                                byte[] buf = new byte[1024];
+                                count = stream.Read(buf, 0, 1024);
+                                ms.Write(buf, 0, count);
+                            } while (stream.CanRead && count > 0);
 
-                        waveBytes = ms.ToArray();
+                            waveBytes = ms.ToArray();
 
-                        return Encoding.UTF8.GetString(waveBytes);
+                            return Encoding.UTF8.GetString(waveBytes);
+                        }
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                //swollow
+
+            }
+
+            return null;
         }
 
         /// <summary>
