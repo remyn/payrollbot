@@ -5,9 +5,11 @@ using Microsoft.WindowsAzure.Storage.Blob;
 using ReckonTwo.Helpers;
 using ReckonTwo.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.UI;
 
 namespace ReckonTwo.Controllers
 {
@@ -17,7 +19,38 @@ namespace ReckonTwo.Controllers
         private const string _botSecretKey = "zkzhHeiTCjc.cwA.36s.6rsMSclswl2chHVZUIUbztcAwzvpFhx3Lk7reN5kJW0";
         private const string _azureStorageEndpoint = "DefaultEndpointsProtocol=https;AccountName=mornestorageaccount;AccountKey=GIQOmCrdQslI9rAir4/Kajzr8UwZNkRGCn0TfG0rIY4GyvVgU3Ejci/88HgEIXMIUkVwB3bfUxvfbAH7DNfQ7w==";
         private const string _speechApiKey = "42d4e9b82b4e43108387e5458216ab00";
+        private static readonly IList<CommentModel> _comments;
 
+        static HomeController()
+        {
+            _comments = new List<CommentModel>
+            {
+                new CommentModel
+                {
+                    Id = 1,
+                    Author = "Daniel Lo Nigro",
+                    Text = "Hello ReactJS.NET World!",
+                    MessageTime = "10:05 a.m.",
+                    IsBot = false
+                },
+                new CommentModel
+                {
+                    Id = 2,
+                    Author = "Pete Hunt",
+                    Text = "This is one comment",
+                    MessageTime = "11:15 a.m.",
+                    IsBot = false
+                },
+                new CommentModel
+                {
+                    Id = 3,
+                    Author = "Jordan Walke",
+                    Text = "This is *another* comment",
+                    MessageTime = "03:07 p.m.",
+                    IsBot = false
+                }
+            };
+        }
         public ActionResult Index()
         {
             return View();
@@ -26,6 +59,59 @@ namespace ReckonTwo.Controllers
         public ActionResult TextToSpeech()
         {
             return View();
+        }
+
+        public ActionResult Chat()
+        {
+            return View();
+        }
+
+        [OutputCache(Location = OutputCacheLocation.None)]
+        public ActionResult Comments()
+        {
+            return Json(_comments, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public ActionResult AddComment(CommentModel comment)
+        {
+            // Create a fake ID for this comment
+            comment.Id = _comments.Count + 1;
+            comment.IsBot = false;
+            comment.MessageTime = DateTime.Now.ToString("HH:mm tt");
+            _comments.Add(comment);
+            return Content("Success :)");
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddBotAnswer(string message)
+        {
+            var botAnswer = new CommentModel
+            {
+                Id = _comments.Count + 1,
+                Author = "Reckon Bot",
+                Text = string.Empty,
+                MessageTime = DateTime.Now.ToString("HH:mm tt"),
+                IsBot = true
+            };
+
+            //if (message.Equals("Hello", StringComparison.CurrentCultureIgnoreCase))
+            //    botAnswer.Text = "Hey! Please ask me something :)";
+
+            //if (message.Equals("How are you?", StringComparison.CurrentCultureIgnoreCase))
+            //    botAnswer.Text = "I'm really good, what about you?";
+
+            //if (botAnswer.Text.Equals(string.Empty))
+            //    botAnswer.Text = "I don't have the answer for that question, please ask something different";
+
+
+            var chat = await TalkToTheBot(message);
+
+            botAnswer.Text = chat.ChatResponse;
+
+            _comments.Add(botAnswer);
+
+            return Content("Success :)");
         }
 
         [HttpPost]
@@ -78,25 +164,23 @@ namespace ReckonTwo.Controllers
 
         public async Task<ActionResult> BotDirect(Chat model)
         {
-            var chat = new Chat();
-
-            chat = await TalkToTheBot(model.ChatMessage);
+            var chat = await TalkToTheBot(model.ChatMessage);
             return View(chat);
         }
 
         private async Task<Chat> TalkToTheBot(string paramMessage)
         {
-            DirectLineClient client = new DirectLineClient(_botSecretKey);
-            Conversation conversation = System.Web.HttpContext.Current.Session["conversation"] as Conversation;
+            var client = new DirectLineClient(_botSecretKey);
+            var conversation = System.Web.HttpContext.Current.Session["conversation"] as Conversation;
 
-            string watermark = System.Web.HttpContext.Current.Session["watermark"] as string;
+            var watermark = System.Web.HttpContext.Current.Session["watermark"] as string;
 
             if (conversation == null)
             {
                 conversation = client.Conversations.NewConversation();
             }
 
-            Message message = new Message
+            var message = new Message
             {
                 FromProperty = User.Identity.Name,
                 Text = paramMessage
@@ -104,23 +188,23 @@ namespace ReckonTwo.Controllers
 
             await client.Conversations.PostMessageAsync(conversation.ConversationId, message);
 
-            Chat chat = await ReadBotMessagesAsync(client, conversation.ConversationId, watermark);
+            var chat = await ReadBotMessagesAsync(client, conversation.ConversationId, watermark);
             System.Web.HttpContext.Current.Session["conversation"] = conversation;
-            System.Web.HttpContext.Current.Session["watermark"] = chat.watermark;
+            System.Web.HttpContext.Current.Session["watermark"] = chat.Watermark;
             return chat;
         }
 
         private async Task<Chat> ReadBotMessagesAsync(DirectLineClient client, string conversationId, string watermark)
         {
-            Chat chat = new Chat();
+            var chat = new Chat();
 
-            bool messageReceived = false;
+            var messageReceived = false;
             while (!messageReceived)
             {
                 var messages = await client.Conversations.GetMessagesAsync(conversationId, watermark);
                 watermark = messages?.Watermark;
 
-                foreach (Message message in messages.Messages.Where(i => i.FromProperty == _botId))
+                foreach (var message in messages.Messages.Where(i => i.FromProperty == _botId))
                 {
                     if (message.Text != null)
                     {
@@ -131,7 +215,7 @@ namespace ReckonTwo.Controllers
                 messageReceived = true;
             }
 
-            chat.watermark = watermark;
+            chat.Watermark = watermark;
             return chat;
         }
     }
