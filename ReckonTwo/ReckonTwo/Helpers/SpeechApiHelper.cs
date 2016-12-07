@@ -13,7 +13,7 @@ namespace ReckonTwo.Helpers
     /// <summary>
     /// This class demonstrates how to get a valid O-auth token
     /// </summary>
-    public class TextToSpeechApiHelper
+    public class SpeechApiHelper
     {
         public static readonly string AccessUri = "https://api.cognitive.microsoft.com/sts/v1.0/issueToken";
         private string apiKey;
@@ -23,7 +23,7 @@ namespace ReckonTwo.Helpers
         //Access token expires every 10 minutes. Renew it every 9 minutes only.
         private const int RefreshTokenDuration = 9;
 
-        public TextToSpeechApiHelper(string apiKey)
+        public SpeechApiHelper(string apiKey)
         {
             this.apiKey = apiKey;
 
@@ -146,7 +146,7 @@ namespace ReckonTwo.Helpers
             throw new Exception("Audio exception: " + e.ToString());
         }
 
-        public async Task<byte[]> StartTextToSpeechAPI(TextToSpeechApiHelper auth, string typedText)
+        public async Task<byte[]> StartTextToSpeechAPI(SpeechApiHelper auth, string typedText)
         {
             Console.WriteLine("Starting Authtentication");
             string accessToken;
@@ -196,6 +196,22 @@ namespace ReckonTwo.Helpers
             return cortana.AudioStreamBytes;
         }
 
+        public async Task<string> StartSpeechToTextAPI(SpeechApiHelper auth, byte[] spokenAudio)
+        {
+            //follow logic from above
+            var resultText = "assign below";
+
+            try
+            {
+
+            }
+            catch (Exception ex)
+            {
+                //swollow
+            }
+
+            return resultText;
+        }
     }
 
     /// <summary>
