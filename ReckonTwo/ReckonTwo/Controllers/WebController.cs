@@ -64,7 +64,7 @@ namespace ReckonTwo.Controllers
 
                 System.Web.HttpContext.Current.Response.Cookies.Add(formsAuthenticationTicketCookie);
 
-                return RedirectToAction("Index", "Home", null);
+                return RedirectToAction("index", "home", null);
             }
 
             return View(new LogInModel());
