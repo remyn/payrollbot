@@ -195,23 +195,6 @@ namespace ReckonTwo.Helpers
 
             return cortana.AudioStreamBytes;
         }
-
-        public async Task<string> StartSpeechToTextAPI(SpeechApiHelper auth, byte[] spokenAudio)
-        {
-            //follow logic from above
-            var resultText = "assign below";
-
-            try
-            {
-
-            }
-            catch (Exception ex)
-            {
-                //swollow
-            }
-
-            return resultText;
-        }
     }
 
     /// <summary>
