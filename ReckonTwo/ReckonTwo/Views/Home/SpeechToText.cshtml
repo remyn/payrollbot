@@ -41,6 +41,14 @@
             document.getElementById("output").value = "";
         }
 
+        function extractResponse(response) {
+            if (response.length > 0) {
+                var splitArray = response.split(',');
+                return splitArray[1].split(':')[1];
+            }
+            return "";
+        }
+
         function setText(text) {
             document.getElementById("output").value += text;
         }
@@ -84,7 +92,8 @@
             }
 
             client.onFinalResponseReceived = function (response) {
-                setText(JSON.stringify(response));
+                console.log(JSON.stringify(response));
+                setText(extractResponse(JSON.stringify(response)));
             }
 
             client.onIntentReceived = function (response) {
