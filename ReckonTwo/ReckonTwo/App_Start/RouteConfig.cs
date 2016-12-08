@@ -30,7 +30,7 @@ namespace ReckonTwo
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",
-                defaults: new { controller = "Web", action = "Login", id = UrlParameter.Optional }
+                defaults: new { controller = "web", action = "login", id = UrlParameter.Optional }
             );
         }
     }
