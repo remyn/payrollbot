@@ -146,7 +146,7 @@ var MessageForm = React.createClass({
                             </a>
                          </span>
                         <div className="input-group-btn">
-                            <button type="submit" className="btn btn-default pull-right" value={ this.state.text } onChange={ this.handleTextChange }>Send</button>
+                            <button type="submit" className="pull-right reckonbutton" value={ this.state.text } onChange={ this.handleTextChange }>Send</button>
                             <div className="clearfix"></div>
                         </div>
                     </div>
