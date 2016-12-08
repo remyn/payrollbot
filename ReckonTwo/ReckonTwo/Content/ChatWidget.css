@@ -165,4 +165,10 @@
 
 .text-red {
     color: #e74c3c;
-}                
+}              
+
+.scrollable-window {
+    overflow-y: auto; 
+    width: auto; 
+    height: 300px;
+}  

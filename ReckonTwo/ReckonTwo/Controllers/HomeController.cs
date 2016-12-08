@@ -23,33 +23,7 @@ namespace ReckonTwo.Controllers
 
         static HomeController()
         {
-            _comments = new List<CommentModel>
-            {
-                new CommentModel
-                {
-                    Id = 1,
-                    Author = "Daniel Lo Nigro",
-                    Text = "Hello ReactJS.NET World!",
-                    MessageTime = "10:05 a.m.",
-                    IsBot = false
-                },
-                new CommentModel
-                {
-                    Id = 2,
-                    Author = "Pete Hunt",
-                    Text = "This is one comment",
-                    MessageTime = "11:15 a.m.",
-                    IsBot = false
-                },
-                new CommentModel
-                {
-                    Id = 3,
-                    Author = "Jordan Walke",
-                    Text = "This is *another* comment",
-                    MessageTime = "03:07 p.m.",
-                    IsBot = false
-                }
-            };
+            _comments = new List<CommentModel>();
         }
         public ActionResult Index()
         {
@@ -94,16 +68,6 @@ namespace ReckonTwo.Controllers
                 MessageTime = DateTime.Now.ToString("HH:mm tt"),
                 IsBot = true
             };
-
-            //if (message.Equals("Hello", StringComparison.CurrentCultureIgnoreCase))
-            //    botAnswer.Text = "Hey! Please ask me something :)";
-
-            //if (message.Equals("How are you?", StringComparison.CurrentCultureIgnoreCase))
-            //    botAnswer.Text = "I'm really good, what about you?";
-
-            //if (botAnswer.Text.Equals(string.Empty))
-            //    botAnswer.Text = "I don't have the answer for that question, please ask something different";
-
 
             var chat = await TalkToTheBot(message);
 

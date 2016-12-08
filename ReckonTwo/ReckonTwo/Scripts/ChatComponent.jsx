@@ -37,22 +37,20 @@ var MessageList = React.createClass({
           {message.Text}
         </Message>
       );
-});
-	
-return (
-  <div className="messageList ">
-    <div className="portlet-body chat-widget">
-        <div className="row">
-            <div className="col-lg-12">
-                <p className="text-center text-muted small">Wednesday, 7 December 2016</p>
+    });
+    return (
+      <div className="messageList ">
+        <div id="scrollable-div" className="portlet-body chat-widget scrollable-window">
+            <div className="row">
+                <div className="col-lg-12">
+                    <p className="text-center text-muted small">Wednesday, 7 December 2016</p>
+                </div>
             </div>
+            {messageNodes}
         </div>
-{messageNodes}
-</div>
-</div>
+    </div>
     );
-}
-});
+}});
 
 var MessageForm = React.createClass({
     getInitialState: function() {
@@ -69,19 +67,21 @@ var MessageForm = React.createClass({
             return;
         }
         this.props.onCommentSubmit({Author: author, Text: text});
-        this.setState({author: '', text: ''});
+        this.setState({ author: '', text: '' });
+        
+
     },
     render: function() {
         return (		
             <div className="portlet-footer">
                 <form role="form" onSubmit={this.handleSubmit}>
-                    <div className="form-group">
-                        <textarea className="form-control" placeholder="Ask something..." value= { this.state.text } onChange= { this.handleTextChange }></textarea>
-                    </div>
-                    <div className="form-group">
-                        <img src={"/Content/speaking.gif"} height="40px;" width="70px;"/>
-                        <button type="submit" className="btn btn-default pull-right" value= { this.state.text } onChange= { this.handleTextChange }>Send</button>
-                        <div className="clearfix"></div>
+                    <div className="input-group">
+                        <input type="text" className="form-control" placeholder="Ask something..." value= { this.state.text } onChange= { this.handleTextChange } />
+                        <div className="input-group-btn">
+                            <button type="submit" className="btn btn-default pull-right" value={ this.state.text } onChange={ this.handleTextChange }>Send</button>
+                            {/*<img src={"/Content/speaking.gif"} height="40px;" width="70px;"/>*/}
+                            <div className="clearfix"></div>
+                        </div>
                     </div>
                 </form>
             </div>
@@ -91,20 +91,26 @@ var MessageForm = React.createClass({
 
 
 var ChatBox = React.createClass({
-    loadCommentsFromServer: function() {
+    scrollToBottom: function(){
+        $("#scrollable-div").scrollTop($("#scrollable-div")[0].scrollHeight);
+    },
+    loadCommentsFromServer: function () {
         var xhr = new XMLHttpRequest();
         xhr.open('get', this.props.url, true);
         xhr.onload = function() {
             var data = JSON.parse(xhr.responseText);
             this.setState({ data: data });
+            this.scrollToBottom();
         }.bind(this);
         xhr.send();
+        this.scrollToBottom();
     },
     handleCommentSubmit: function(message) {
         var messages = this.state.data;
         message.id = Date.now();
         var newMessages = messages.concat([message]);
-        this.setState({data: newMessages});
+        this.setState({ data: newMessages });
+        this.scrollToBottom();
 
         var data = new FormData();
         data.append('Author', message.Author);
@@ -128,7 +134,8 @@ var ChatBox = React.createClass({
     getInitialState: function() {
         return {data: []};
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
+        this.scrollToBottom();
         this.loadCommentsFromServer();
         window.setInterval(this.loadCommentsFromServer, this.props.pollInterval);
     },
