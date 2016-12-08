@@ -43,7 +43,7 @@ var MessageList = React.createClass({
         <div id="scrollable-div" className="portlet-body chat-widget scrollable-window">
             <div className="row">
                 <div className="col-lg-12">
-                    <p className="text-center text-muted small">Wednesday, 7 December 2016</p>
+                    <p className="text-center text-muted small">{$("#currentDate").val()}</p>
                 </div>
             </div>
             {messageNodes}
@@ -68,8 +68,6 @@ var MessageForm = React.createClass({
         }
         this.props.onCommentSubmit({Author: author, Text: text});
         this.setState({ author: '', text: '' });
-        
-
     },
     render: function() {
         return (		
@@ -100,6 +98,7 @@ var ChatBox = React.createClass({
         $('[data-toggle="tooltip"]').tooltip();
     },
     loadCommentsFromServer: function () {
+        this.scrollToBottom();
         var xhr = new XMLHttpRequest();
         xhr.open('get', this.props.url, true);
         xhr.onload = function() {
@@ -112,7 +111,8 @@ var ChatBox = React.createClass({
     },
     handleCommentSubmit: function(message) {
         var messages = this.state.data;
-        message.id = Date.now();
+        message.Id = Date.now();
+        message.IsBot = false;
         var newMessages = messages.concat([message]);
         this.setState({ data: newMessages });
         this.scrollToBottom();
@@ -123,27 +123,17 @@ var ChatBox = React.createClass({
 
         var xhr = new XMLHttpRequest();
         xhr.open('post', this.props.submitUrl, true);
-        xhr.onload = function() {
-            var answer = this.handleBotAnswer(message.Text);
+        xhr.onload = function () {
+            var botAnswer = JSON.parse(xhr.responseText);
+            this.playTextAsSpeech(botAnswer);
             this.loadCommentsFromServer();
         }.bind(this);
         xhr.send(data);
     },
-    handleBotAnswer: function(message) {
-        var params = "message=" + message;
-        var xhr = new XMLHttpRequest();
-        xhr.open('post', this.props.addBotAnswerUrl, true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function () {
-            var volume = $("#volume");
-            if (volume.hasClass("active")) {
-                var botAnswer = JSON.parse(xhr.responseText);
-                this.playTextAsSpeech(botAnswer);
-            }
-        }.bind(this);
-        xhr.send(params);
-    },
     playTextAsSpeech: function (message) {
+        var volume = $("#volume");
+        if (!volume.hasClass("active")) return;
+
         $.ajax({
             url: "/Home/ConvertTextToSpeech",
             type: "POST",
@@ -167,6 +157,9 @@ var ChatBox = React.createClass({
     },
     getInitialState: function() {
         return {data: []};
+    },
+    componentWillUpdate: function(){
+        this.scrollToBottom();
     },
     componentDidMount: function () {
         this.scrollToBottom();
@@ -233,6 +226,6 @@ var ChatBox = React.createClass({
 });
 
 ReactDOM.render(
-  <ChatBox url="/comments" submitUrl="/comments/new" addBotAnswerUrl="/comments/addBotAnswer" pollInterval={2000} />,
+  <ChatBox url="/comments" submitUrl="/comments/new" pollInterval={2000} />,
   document.getElementById('content')
 );

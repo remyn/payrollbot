@@ -1,9 +1,10 @@
-﻿
-<link href="~/Content/ChatWidget.css" rel="stylesheet" />
+﻿<link href="~/Content/ChatWidget.css" rel="stylesheet" />
 <link rel="stylesheet" href="/Content/font-awesome/css/font-awesome.min.css">
 
 <div class="container bootstrap snippet">
     <div class="row">
+        @Html.Hidden("currentDate", DateTime.Today.ToString("D"))
+
         <audio autoplay id="audioControl"></audio>
         <div id="content"></div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>

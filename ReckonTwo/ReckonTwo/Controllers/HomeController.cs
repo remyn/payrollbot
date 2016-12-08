@@ -50,18 +50,19 @@ namespace ReckonTwo.Controllers
         }
 
         [HttpPost]
-        public ActionResult AddComment(CommentModel comment)
+        public async Task<ActionResult> AddComment(CommentModel comment)
         {
-            // Create a fake ID for this comment
             comment.Id = _comments.Count + 1;
             comment.IsBot = false;
             comment.MessageTime = DateTime.Now.ToString("HH:mm tt");
             _comments.Add(comment);
-            return Content("Success :)");
+
+            var botAnswer = await AddBotAnswer(comment.Text);
+
+            return Json(botAnswer);
         }
 
-        [HttpPost]
-        public async Task<ActionResult> AddBotAnswer(string message)
+        private async Task<string> AddBotAnswer(string message)
         {
             var botAnswer = new CommentModel
             {
@@ -78,7 +79,7 @@ namespace ReckonTwo.Controllers
 
             _comments.Add(botAnswer);
 
-            return Json(botAnswer.Text);
+            return botAnswer.Text;
         }
 
         [HttpPost]
