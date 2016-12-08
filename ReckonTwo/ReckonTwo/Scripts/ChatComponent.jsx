@@ -69,14 +69,81 @@ var MessageForm = React.createClass({
         this.props.onCommentSubmit({Author: author, Text: text});
         this.setState({ author: '', text: '' });
     },
+    getLuisConfig: function(){
+        var appid = ""; //"luis_appid"
+        var subid = ""; //"luis_subid";
+
+        if (appid.length > 0 && subid.length > 0) {
+            return { appid: appid, subid: subid };
+        }
+
+        return null;
+    },
+    getLanguage: function () {
+        return "en-us";
+    },
+    getKey: function () {
+        return "42d4e9b82b4e43108387e5458216ab00";
+    },
+    extractResponse: function (response) {
+        if (response.length > 0) {
+            var splitArray = response.split(',');
+            return splitArray[1].split(':')[1].replace(/['"]+/g, '');
+        }
+
+        return "";
+    },
+    setText: function (newText) {
+        this.setState({ text: newText });
+    },
+    activateSpeechToText: function () {
+        var mode = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
+        var luisCfg = this.getLuisConfig();
+        var component = this;
+
+        if (luisCfg) {
+            client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClientWithIntent(
+                component.getLanguage(),
+                component.getKey(),
+                luisCfg.appid,
+                luisCfg.subid);
+        } else {
+            client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
+                mode,
+                component.getLanguage(),
+                component.getKey());
+        }
+
+        client.startMicAndRecognition();
+
+        setTimeout(function () {
+            client.endMicAndRecognition();
+        }, 5000);
+
+        client.onPartialResponseReceived = function (response) {
+            component.setText(response);
+        }
+
+        client.onFinalResponseReceived = function (response) {
+            console.log(JSON.stringify(response));
+            var extractedResponse = component.extractResponse(JSON.stringify(response))
+            component.setText(extractedResponse);
+        }
+
+        client.onIntentReceived = function (response) {
+            component.setText(response);
+        };
+    },
     render: function() {
         return (		
             <div className="portlet-footer">
                 <form role="form" onSubmit={this.handleSubmit}>
                     <div className="input-group input-group-unstyled">
                          <input type="text" className="form-control" placeholder="Ask something..." value={ this.state.text } onChange={ this.handleTextChange } />
-                         <span className="input-group-addon">
-                            <a data-toggle="tooltip" data-placement="bottom" title="Activate Speech to Text"><i className="fa fa-microphone fa-2x" aria-hidden="true"></i></a>
+                         <span className="input-group-addon"  onClick={ this.activateSpeechToText }>
+                            <a data-toggle="tooltip" data-placement="bottom" title="Activate Speech to Text">
+                             <i className="fa fa-microphone fa-2x" aria-hidden="true"></i>
+                            </a>
                          </span>
                         <div className="input-group-btn">
                             <button type="submit" className="btn btn-default pull-right" value={ this.state.text } onChange={ this.handleTextChange }>Send</button>
