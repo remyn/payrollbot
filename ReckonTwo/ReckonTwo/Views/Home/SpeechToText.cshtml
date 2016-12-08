@@ -21,10 +21,10 @@
             <ol id="RemoveListnumber">
                 <li>
                     <span class="col-lg-2">
-                        <button onclick="start()" id="btnStartSpeaking">Start Speaking</button>
+                        <input type="button" onclick="start()" id="btnStartSpeaking" value="Start Speaking" />
                     </span>
                     <span class="col-lg-1">
-                        <button onclick="stop()" id="btnStop">Stop</button>
+                        <input type="button" onclick="stop()" id="btnStop" value="Stop" />
                     </span>
                     <br> <br/>
                     <span>
@@ -83,11 +83,17 @@
             return null;
         }
 
+        function toggleButtons(toggleFlag) {
+            $("#btnStartSpeaking").prop("disabled", toggleFlag);
+            $("#btnStop").prop("disabled", !toggleFlag);
+        }
         function stop() {
             client.endMicAndRecognition();
+            toggleButtons(false);
         }
 
         function start() {
+            
             var mode = getMode();
             var luisCfg = getLuisConfig();
 
@@ -106,8 +112,10 @@
                     getKey());
             }
             client.startMicAndRecognition();
+            toggleButtons(true);
             setTimeout(function () {
                 client.endMicAndRecognition();
+                toggleButtons(false);
             }, 5000);
 
             client.onPartialResponseReceived = function (response) {
