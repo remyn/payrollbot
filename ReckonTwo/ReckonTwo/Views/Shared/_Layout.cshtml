@@ -48,7 +48,7 @@
                             <a href="/home/botdirect">Bot Connection</a>
                         </li>
                         <li>
-                            @using (Html.BeginForm("logoff", "web"))
+                            @using (Html.BeginForm("logoff", "home"))
                             {
                                 <button type="submit"  style="background-color: #00BD9D; border-color: #00BD9D;" class="btn navbar-btn btn-danger" name="logout" id="logout" value="Log Out">Sign Out (@(((System.Web.Security.FormsIdentity)Request.RequestContext.HttpContext.User.Identity).Ticket.UserData.Split('|')[0]))</button>
                             }
