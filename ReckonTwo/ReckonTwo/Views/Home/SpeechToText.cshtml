@@ -1,4 +1,4 @@
-﻿  
+﻿
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
@@ -9,7 +9,86 @@
                 </li>
                 <li class="active">Speech to text</li>
             </ol>
+            <ul>
 
+                <div class="col-lg-8">
+                    <button onclick="start()">Start</button>
+
+                    <textarea id="output" style='width: 400px; height: 200px'></textarea>
+                </div>
+            </ul>
         </div>
     </div>
 </div>
+<!--Test-->
+<script src="~/Scripts/speech.1.0.0.js" type="text/javascript"></script>
+<script type="text/javascript">
+        var client;
+
+        function getMode() {
+            return Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
+        }
+
+        function getKey() {
+            return "42d4e9b82b4e43108387e5458216ab00";
+        }
+
+        function getLanguage() {
+            return "en-us";
+        }
+
+        function clearText() {
+            document.getElementById("output").value = "";
+        }
+
+        function setText(text) {
+            document.getElementById("output").value += text;
+        }
+
+        function getLuisConfig() {
+            var appid =""; //"luis_appid"
+            var subid = ""; //"luis_subid";
+
+            if (appid.length > 0 && subid.length > 0) {
+                return { appid: appid, subid: subid };
+            }
+
+            return null;
+        }
+
+        function start() {
+            var mode = getMode();
+            var luisCfg = getLuisConfig();
+
+            clearText();
+
+            if (luisCfg) {
+                client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClientWithIntent(
+                    getLanguage(),
+                    getKey(),
+                    luisCfg.appid,
+                    luisCfg.subid);
+            } else {
+                client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
+                    mode,
+                    getLanguage(),
+                    getKey());
+            }
+            client.startMicAndRecognition();
+            setTimeout(function () {
+                client.endMicAndRecognition();
+            }, 5000);
+
+            client.onPartialResponseReceived = function (response) {
+                setText(response);
+            }
+
+            client.onFinalResponseReceived = function (response) {
+                setText(JSON.stringify(response));
+            }
+
+            client.onIntentReceived = function (response) {
+                setText(response);
+            };
+        }
+</script>
