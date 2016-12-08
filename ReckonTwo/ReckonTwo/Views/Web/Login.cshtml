@@ -1,0 +1,39 @@
+﻿@model ReckonTwo.Models.LogInModel
+
+@using (Html.BeginForm("Login", "Web"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+
+        <div class="container">
+            <div class="col-md-6 col-md-offset-2">
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="alert alert-danger alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        @ViewBag.ErrorMessage.ToString()
+                    </div>
+                }
+
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <img class="img img-thumbnail logo" src="~/Content/reckon_logo.png" />
+                        <h4>Please provide your login details</h4>
+                    </div>
+                    <div class="panel-body">
+
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email address" } })
+                        <br/>
+                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+
+                        <input type="submit" value="Sign in" class="btn pull-right btn-primary"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}

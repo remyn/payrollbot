@@ -13,7 +13,7 @@ using System.Web.UI;
 
 namespace ReckonTwo.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : SharedController
     {
         private const string _botId = "rkn-payroll-bot";
         private const string _botSecretKey = "zkzhHeiTCjc.cwA.36s.6rsMSclswl2chHVZUIUbztcAwzvpFhx3Lk7reN5kJW0";
@@ -27,6 +27,9 @@ namespace ReckonTwo.Controllers
         }
         public ActionResult Index()
         {
+            var userGuid = GetLoggedInUserID();
+            var userFullName = GetLoggedInUserFullName();
+
             return View();
         }
 
@@ -123,9 +126,6 @@ namespace ReckonTwo.Controllers
 
         public ActionResult SpeechToText()
         {
-            //var _speechApi = new SpeechApiHelper(_speechApiKey);
-            //var resultText = await _speechApi.StartSpeechToTextAPI(_speechApi, new byte[]);
-
             return View();
         }
 
