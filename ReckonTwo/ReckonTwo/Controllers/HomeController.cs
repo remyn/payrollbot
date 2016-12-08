@@ -19,38 +19,39 @@ namespace ReckonTwo.Controllers
         private const string _botSecretKey = "zkzhHeiTCjc.cwA.36s.6rsMSclswl2chHVZUIUbztcAwzvpFhx3Lk7reN5kJW0";
         private const string _azureStorageEndpoint = "DefaultEndpointsProtocol=https;AccountName=mornestorageaccount;AccountKey=GIQOmCrdQslI9rAir4/Kajzr8UwZNkRGCn0TfG0rIY4GyvVgU3Ejci/88HgEIXMIUkVwB3bfUxvfbAH7DNfQ7w==";
         private const string _speechApiKey = "42d4e9b82b4e43108387e5458216ab00";
-        private static readonly IList<CommentModel> _comments;
+        private static readonly IList<CommentModel> _comments = new List<CommentModel>();
 
-        static HomeController()
-        {
-            _comments = new List<CommentModel>
-            {
-                new CommentModel
-                {
-                    Id = 1,
-                    Author = "Daniel Lo Nigro",
-                    Text = "Hello ReactJS.NET World!",
-                    MessageTime = "10:05 a.m.",
-                    IsBot = false
-                },
-                new CommentModel
-                {
-                    Id = 2,
-                    Author = "Pete Hunt",
-                    Text = "This is one comment",
-                    MessageTime = "11:15 a.m.",
-                    IsBot = false
-                },
-                new CommentModel
-                {
-                    Id = 3,
-                    Author = "Jordan Walke",
-                    Text = "This is *another* comment",
-                    MessageTime = "03:07 p.m.",
-                    IsBot = false
-                }
-            };
-        }
+        //static HomeController()
+        //{
+        //    _comments = new List<CommentModel>
+        //    {
+        //        new CommentModel
+        //        {
+        //            Id = 1,
+        //            Author = "Daniel Lo Nigro",
+        //            Text = "Hello ReactJS.NET World!",
+        //            MessageTime = "10:05 a.m.",
+        //            IsBot = false
+        //        },
+        //        new CommentModel
+        //        {
+        //            Id = 2,
+        //            Author = "Pete Hunt",
+        //            Text = "This is one comment",
+        //            MessageTime = "11:15 a.m.",
+        //            IsBot = false
+        //        },
+        //        new CommentModel
+        //        {
+        //            Id = 3,
+        //            Author = "Jordan Walke",
+        //            Text = "This is *another* comment",
+        //            MessageTime = "03:07 p.m.",
+        //            IsBot = false
+        //        }
+        //    };
+        //}
+
         public ActionResult Index()
         {
             return View();

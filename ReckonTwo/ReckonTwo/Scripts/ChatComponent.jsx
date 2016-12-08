@@ -76,10 +76,9 @@ var MessageForm = React.createClass({
             <div className="portlet-footer">
                 <form role="form" onSubmit={this.handleSubmit}>
                     <div className="form-group">
-                        <textarea className="form-control" placeholder="Ask something..." value= { this.state.text } onChange= { this.handleTextChange }></textarea>
+                        <textarea className="form-control" placeholder="Start typing..." value= { this.state.text } onChange= { this.handleTextChange }></textarea>
                     </div>
-                    <div className="form-group">
-                        <img src={"/Content/speaking.gif"} height="40px;" width="70px;"/>
+                    <div className="form-group">                     
                         <button type="submit" className="btn btn-default pull-right" value= { this.state.text } onChange= { this.handleTextChange }>Send</button>
                         <div className="clearfix"></div>
                     </div>

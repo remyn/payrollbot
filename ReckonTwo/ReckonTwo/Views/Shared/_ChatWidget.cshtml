@@ -1,15 +1,26 @@
 ﻿
 <link href="~/Content/ChatWidget.css" rel="stylesheet" />
-
 <link rel="stylesheet" href="/Content/font-awesome/css/font-awesome.min.css">
-
+ 
 <div class="container bootstrap snippet">
     <div class="row">
-        <div>
+        <div id="content"></div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+        <script src="/Scripts/bootstrap.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+        <script type="text/jsx" src="https://cdnjs.cloudflare.com/ajax/libs/remarkable/1.7.1/remarkable.min.js">
+        </script>
+        <script src="http://fb.me/JSXTransformer-0.12.2.js"></script>
+        <script type="text/jsx" src="/Scripts/ChatComponent.jsx">
+        </script>
+
+        @*<div>
             <div class="portlet portlet-default">
                 <div class="portlet-heading">
                     <div class="portlet-title">
-                        <h4><i class="fa fa-circle text-green"></i> Chat &nbsp; <img id="imgAI" class="img-rounded" src="~/Content/speaking.gif" height="35px;" width="100px;" /></h4>
+                        <h4><i class="fa fa-circle text-green"></i> Chat &nbsp; <img id="imgAI" class="img-rounded" src="~/Content/speaking.gif" height="35px;" width="100px;"/></h4>
                     </div>
                     <div class="portlet-widgets">
                         <span class="divider"></span>
@@ -31,7 +42,7 @@
                                 <div class="col-lg-12">
                                     <div class="media">
                                         <a class="pull-left" href="#">
-                                            <img class="media-object" src="~/Content/reckon_logo.png" />
+                                            <img class="media-object" src="~/Content/reckon_logo.png"/>
                                         </a>
                                         <div class="media-body">
                                             <h4 class="media-heading">
@@ -50,7 +61,7 @@
                                 <div class="col-lg-12">
                                     <div class="media">
                                         <a class="pull-left" href="#">
-                                            <img class="media-object img-circle" src="~/Content/user.png" />
+                                            <img class="media-object img-circle" src="~/Content/user.png"/>
                                         </a>
                                         <div class="media-body">
                                             <h4 class="media-heading">
@@ -85,7 +96,7 @@
 
                 </div>
             </div>
-        </div>
+        </div>*@
         <!-- /.col-md-4 -->
     </div>
 </div>                
