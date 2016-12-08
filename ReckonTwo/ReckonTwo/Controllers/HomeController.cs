@@ -20,11 +20,14 @@ namespace ReckonTwo.Controllers
         private const string _azureStorageEndpoint = "DefaultEndpointsProtocol=https;AccountName=mornestorageaccount;AccountKey=GIQOmCrdQslI9rAir4/Kajzr8UwZNkRGCn0TfG0rIY4GyvVgU3Ejci/88HgEIXMIUkVwB3bfUxvfbAH7DNfQ7w==";
         private const string _speechApiKey = "42d4e9b82b4e43108387e5458216ab00";
         private static readonly IList<CommentModel> _comments;
+        private static SpeechApiHelper _speechApi;
 
         static HomeController()
         {
             _comments = new List<CommentModel>();
+            _speechApi = new SpeechApiHelper(_speechApiKey);
         }
+
         public ActionResult Index()
         {
             var userGuid = GetLoggedInUserID();
@@ -85,8 +88,6 @@ namespace ReckonTwo.Controllers
         [HttpPost]
         public async Task<ActionResult> ConvertTextToSpeech(string text)
         {
-            var _speechApi = new SpeechApiHelper(_speechApiKey);
-
             var audioStreamBytes = await _speechApi.StartTextToSpeechAPI(_speechApi, text);
 
             //for now, convert audio byte[] to an .mp3, store in an azure cloud blob and stream from there
@@ -159,14 +160,15 @@ namespace ReckonTwo.Controllers
             var chat = await ReadBotMessagesAsync(client, conversation.ConversationId, watermark);
             System.Web.HttpContext.Current.Session["conversation"] = conversation;
             System.Web.HttpContext.Current.Session["watermark"] = chat.Watermark;
+
             return chat;
         }
 
         private async Task<Chat> ReadBotMessagesAsync(DirectLineClient client, string conversationId, string watermark)
         {
             var chat = new Chat();
-
             var messageReceived = false;
+
             while (!messageReceived)
             {
                 var messages = await client.Conversations.GetMessagesAsync(conversationId, watermark);

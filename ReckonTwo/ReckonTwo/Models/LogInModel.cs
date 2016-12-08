@@ -11,6 +11,7 @@ namespace ReckonTwo.Models
 
         [Required]
         [MaxLength(550)]
+        [DataType(DataType.Password)]
         public string Password { get; set; }
     }
 }
