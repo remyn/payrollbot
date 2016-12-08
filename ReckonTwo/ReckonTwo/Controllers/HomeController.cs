@@ -82,7 +82,7 @@ namespace ReckonTwo.Controllers
 
             _comments.Add(botAnswer);
 
-            return Content("Success :)");
+            return Json(botAnswer.Text);
         }
 
         [HttpPost]
