@@ -21,7 +21,14 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a class="navbar-brand" href="/"><img src="~/Content/reckon_logo.png" class="img-responsive"></a>
+                @if (!Request.IsAuthenticated)
+                {
+                    <a class="navbar-brand" href="/"><img src="~/Content/reckon_logo.png" class="img-responsive"></a>
+                }
+                else
+                {
+                    <a class="navbar-brand" href="/home/index"><img src="~/Content/reckon_logo.png" class="img-responsive"></a>
+                }
             </div> 
 
             @if (Request.IsAuthenticated)
@@ -40,7 +47,12 @@
                         <li>
                             <a href="/home/botdirect">Bot Connection</a>
                         </li>
-                        <li><a href="~/web/logoff">Sign Out (@(((System.Web.Security.FormsIdentity)Request.RequestContext.HttpContext.User.Identity).Ticket.UserData.Split('|')[0]))</a></li>
+                        <li>
+                            @using (Html.BeginForm("logoff", "web"))
+                            {
+                                <button type="submit"  style="background-color: #00BD9D; border-color: #00BD9D;" class="btn navbar-btn btn-danger" name="logout" id="logout" value="Log Out">Sign Out (@(((System.Web.Security.FormsIdentity)Request.RequestContext.HttpContext.User.Identity).Ticket.UserData.Split('|')[0]))</button>
+                            }
+                        </li>
                     </ul>
                 </div>
             } 

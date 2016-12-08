@@ -7,7 +7,7 @@
     <div class="form-horizontal">
 
         <div class="container">
-            <div class="col-md-6 col-md-offset-2">
+            <div class="col-md-6 col-md-offset-3">
                 @if (ViewBag.ErrorMessage != null)
                 {
                     <div class="alert alert-danger alert-dismissable">
@@ -20,15 +20,19 @@
                     <div class="panel-body">
                         <img src="~/Content/hackathon_robots.png" class="center-block img-responsive img-rounded"/>
                         <hr/>
-                        <h4>Please provide your login details</h4>
+                        <h4 class="text-center">Please provide your login details</h4>
 
-                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-
-                        @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", @placeholder = "Email address" } })
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger col-md-offset-3" })
+ 
+                        <div class="col-md-offset-3">
+                            @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control ", @placeholder = "Email address" } })
+                        </div>
                         <br/>
-                        @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
-
-                        <input type="submit" value="Sign in" class="btn pull-right btn-primary"/>
+                        <div class="col-md-offset-3">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", @placeholder = "Password" } })
+                        </div>
+                        <br />
+                        <input type="submit" value="Sign in" class="btn pull-right btn-primary" style="background-color: #00BD9D; border-color: #00BD9D;"/>
                     </div>
                 </div>
             </div>
