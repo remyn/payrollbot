@@ -12,7 +12,7 @@
             <ul>
 
                 <div class="col-lg-8">
-                    <button onclick="start()">Start</button>
+                    <button onclick="start()">Start Speaking</button>
 
                     <textarea id="output" style='width: 400px; height: 200px'></textarea>
                 </div>
@@ -44,7 +44,7 @@
         function extractResponse(response) {
             if (response.length > 0) {
                 var splitArray = response.split(',');
-                return splitArray[1].split(':')[1];
+                return splitArray[1].split(':')[1].replace(/['"]+/g, '');
             }
             return "";
         }
