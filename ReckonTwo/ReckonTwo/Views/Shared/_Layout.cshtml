@@ -47,7 +47,12 @@
                         <li>
                             <a href="/home/botdirect">Bot Connection</a>
                         </li>
-                        <li><a href="~/web/logoff">Sign Out (@(((System.Web.Security.FormsIdentity)Request.RequestContext.HttpContext.User.Identity).Ticket.UserData.Split('|')[0]))</a></li>
+                        <li>
+                            @using (Html.BeginForm("logoff", "web"))
+                            {
+                                <button type="submit" class="btn navbar-btn btn-danger" name="logout" id="logout" value="Log Out">Sign Out (@(((System.Web.Security.FormsIdentity)Request.RequestContext.HttpContext.User.Identity).Ticket.UserData.Split('|')[0]))</button>
+                            }
+                        </li>
                     </ul>
                 </div>
             } 
