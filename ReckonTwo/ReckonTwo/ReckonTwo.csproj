@@ -216,6 +216,7 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Controllers\NotificationController.cs" />
     <Compile Include="Controllers\SharedController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
@@ -223,6 +224,8 @@
     </Compile>
     <Compile Include="Helpers\SpeechApiHelper.cs" />
     <Compile Include="Models\Chat.cs" />
+    <Compile Include="Models\NotificationComponentModel.cs" />
+    <Compile Include="Models\NotificationModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\LogInModel.cs" />
     <Compile Include="Models\CommentModel.cs" />
@@ -246,6 +249,7 @@
     <Content Include="Content\font-awesome\HELP-US-OUT.txt" />
     <Content Include="Content\hackathon_robots.png" />
     <Content Include="Content\hacker.jpg" />
+    <Content Include="Content\messages-list.css" />
     <Content Include="Content\NetPosition.png" />
     <Content Include="Content\Pricing.png" />
     <Content Include="Content\reckon_logo.png" />
@@ -305,7 +309,12 @@
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\JSXTransformer.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\NotificationCenter.js" />
+    <Content Include="Scripts\react-dom.js" />
+    <Content Include="Scripts\react.js" />
+    <Content Include="Scripts\remarkable.min.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\speech.1.0.0.js" />
@@ -332,9 +341,12 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Home\Chat.cshtml" />
     <Content Include="Views\Home\Login.cshtml" />
+    <Content Include="Views\Shared\_NotificationsWidget.cshtml" />
+    <Content Include="Scripts\NotificationsComponent.jsx" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Notification\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Project_Readme.html" />
