@@ -16,6 +16,12 @@ namespace ReckonTwo
             );
 
             routes.MapRoute(
+                name: "Notifications",
+                url: "notifications",
+                defaults: new { controller = "Notification", action = "Notifications" }
+            );
+
+            routes.MapRoute(
                 name: "NewComment",
                 url: "comments/new",
                 defaults: new { controller = "Home", action = "AddComment" }

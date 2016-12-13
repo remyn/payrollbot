@@ -30,7 +30,7 @@ namespace ReckonTwo.Controllers
             _comments = new List<CommentModel>();
             _speechApi = new SpeechApiHelper(_speechApiKey);
 
-            var userGuid = GetLoggedInUserID();
+            var userGuid = GetLoggedInUserId();
             var userFullName = GetLoggedInUserFullName();
 
             return View();

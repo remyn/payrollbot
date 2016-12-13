@@ -34,8 +34,8 @@ var MessageList = React.createClass({
         var messageNodes = this.props.data.map(function(message) {
             return (
               <Message author={message.Author} isBot={message.IsBot} messageTime={message.MessageTime} key={message.Id}>
-          {message.Text}
-        </Message>
+                {message.Text}
+              </Message>
       );
     });
     return (
@@ -294,5 +294,5 @@ var ChatBox = React.createClass({
 
 ReactDOM.render(
   <ChatBox url="/comments" submitUrl="/comments/new" pollInterval={2000} />,
-  document.getElementById('content')
+  document.getElementById('chatContent')
 );

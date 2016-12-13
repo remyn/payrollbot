@@ -5,7 +5,7 @@ namespace ReckonTwo.Controllers
 {
     public class SharedController : Controller
     {
-        public Guid GetLoggedInUserID()
+        public Guid GetLoggedInUserId()
         {
             try
             {
