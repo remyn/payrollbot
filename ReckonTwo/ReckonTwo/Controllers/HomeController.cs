@@ -21,7 +21,7 @@ namespace ReckonTwo.Controllers
         private const string _botId = "rkn-payroll-bot";
         private const string _botSecretKey = "zkzhHeiTCjc.cwA.36s.6rsMSclswl2chHVZUIUbztcAwzvpFhx3Lk7reN5kJW0";
         private const string _azureStorageEndpoint = "DefaultEndpointsProtocol=https;AccountName=mornestorageaccount;AccountKey=GIQOmCrdQslI9rAir4/Kajzr8UwZNkRGCn0TfG0rIY4GyvVgU3Ejci/88HgEIXMIUkVwB3bfUxvfbAH7DNfQ7w==";
-        private const string _speechApiKey = "42d4e9b82b4e43108387e5458216ab00";
+        private const string _speechApiKey = "881c7244987f41f9829839b79b4782a8";
         private static IList<CommentModel> _comments;
         private static SpeechApiHelper _speechApi;
 
