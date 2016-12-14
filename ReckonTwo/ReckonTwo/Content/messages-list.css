@@ -28,7 +28,7 @@ body {
 	-------------------------------------------------- */
 .panel {
 	border: 1px solid #ddd;
-	background-color: #fcfcfc;
+	background-color: #f9f9f9;
 }
 .panel .btn-group {
 	margin: 15px 0 30px;
@@ -37,11 +37,12 @@ body {
 	transition: background-color .3s ease;
 }
 .panel-body {
-    background-color: #fcfcfc
+    background-color: #f9f9f9
 }
 .table-filter {
 	background-color: #fff;
 	border-bottom: 1px solid #eee;
+    width: 450px;
 }
 .table-filter tbody tr:hover {
 	cursor: pointer;
@@ -155,4 +156,9 @@ body {
    background:#00BD9D;
    position:relative;
    left: -11px;
+}
+
+.footer-btn {
+    display: block;
+    margin-left: 150px;
 }

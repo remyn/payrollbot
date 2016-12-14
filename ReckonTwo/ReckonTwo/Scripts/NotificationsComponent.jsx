@@ -1,8 +1,10 @@
 ﻿var Notification = React.createClass({
+    
     render: function () {
         var status = this.props.status;
+
         return (
-            <tr data-status={status} className={(this.props.isSeen ? "" : "selected")}>
+            <tr data-status={status} data-key={this.props.notificationId} className={(this.props.isSeen ? "" : "selected")}>
                 <td>
                     <div className="ckbox">
                         <input type="checkbox" id="checkbox1" />
@@ -17,7 +19,8 @@
                 <td>
                     <div className="media">
                         <a href="#" className="pull-left">
-                                <img src="https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg" className="media-photo" />
+                                <img src={this.props.status != "payroll" ? "https://s3.amazonaws.com/uifaces/faces/twitter/fffabs/128.jpg" :
+                                        "https://cdn3.iconfinder.com/data/icons/avatars-9/145/Avatar_Robot-128.png"} className="media-photo" />
                         </a>
                         <div className="media-body">
                             <span className="media-meta pull-right">{this.props.notificationTime}</span>
@@ -36,11 +39,11 @@
 
 
 var NotificationList = React.createClass({
-    render: function() {
+    render: function () {
         var notificationNodes = this.props.data.map(function(notification) {
             return (
               <Notification status={notification.Status} isSeen={notification.IsSeen} isStarred={notification.IsStarred} 
-                       notificationTime={notification.NotificationTime} title={notification.Title} key={notification.Id}>
+                       notificationTime={notification.NotificationTime} notificationId={notification.Id} title={notification.Title} key={notification.Id}>
                 {notification.Text}
               </Notification>
             );
@@ -83,9 +86,19 @@ var NotificationBox = React.createClass({
         window.setInterval(this.loadCommentsFromServer, this.props.interval);
     },
     setNumberOfNewNotifications: function (numberOfNewNotifications) {
-        $("#notificationBadge").text(numberOfNewNotifications);
+        var notificationBadge = $("#notificationBadge");
+
+        if (numberOfNewNotifications > 0) {
+            notificationBadge.text(numberOfNewNotifications);
+            notificationBadge.removeClass("hidden");
+        }
+        else {
+            notificationBadge.addClass("hidden");
+        }
+        
     },
-    render: function() {
+    render: function () {
+
         return (
 		    <div className="hidden" id="a1">
                 <div className="popover-body">
@@ -103,10 +116,12 @@ var NotificationBox = React.createClass({
                                 <br />
                                 <br />
                                 <br />
-                                <div className="table-container">
+                                <div className="table-container" >
                                     <NotificationList data={this.state.notifications} />
                                 </div>
+                                <button type="button" className="btn btn-default btn-filter footer-btn" data-target="all">Notifications Centre</button>
                             </div>
+                            
                         </section>
                     </div>
                 </div>

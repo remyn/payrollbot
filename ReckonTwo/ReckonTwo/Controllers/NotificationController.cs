@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 using System.Web.UI;
 using Newtonsoft.Json;
 using ReckonTwo.Models;
@@ -22,7 +26,7 @@ namespace ReckonTwo.Controllers
                 {
                     Id = 1,
                     Title = "First React Notification",
-                    Text = "Ut enim ad minim veniam, quis nostrud exercitation...",
+                    Text = "Ut enim ad minim veniam, quis nostrud...",
                     IsSeen = true,
                     IsStarred = false,
                     Status = "payroll",
@@ -32,7 +36,7 @@ namespace ReckonTwo.Controllers
                 {
                     Id = 2,
                     Title = "Hey! A new Notification",
-                    Text = "Ut enim ad minim veniam, quis nostrud exercitation...",
+                    Text = "Ut enim ad minim veniam, quis nostrud...",
                     IsSeen = false,
                     IsStarred = true,
                     Status = "payroll",
@@ -42,7 +46,7 @@ namespace ReckonTwo.Controllers
                 {
                     Id = 3,
                     Title = "Hey! A new Notification",
-                    Text = "Ut enim ad minim veniam, quis nostrud exercitation...",
+                    Text = "Ut enim ad minim veniam, quis nostrud...",
                     IsSeen = true,
                     IsStarred = false,
                     Status = "core",
@@ -52,7 +56,7 @@ namespace ReckonTwo.Controllers
                 {
                     Id = 4,
                     Title = "Hey! A new Notification",
-                    Text = "Ut enim ad minim veniam, quis nostrud exercitation...",
+                    Text = "Ut enim ad minim veniam, quis nostrud...",
                     IsSeen = true,
                     IsStarred = true,
                     Status = "system",
@@ -62,7 +66,7 @@ namespace ReckonTwo.Controllers
                 {
                     Id = 5,
                     Title = "Hey! A new Notification",
-                    Text = "Ut enim ad minim veniam, quis nostrud exercitation...",
+                    Text = "Ut enim ad minim veniam, quis nostrud...",
                     IsSeen = false,
                     IsStarred = false,
                     Status = "payroll",
@@ -77,6 +81,34 @@ namespace ReckonTwo.Controllers
             var response = await GetExternalResponse();
 
             return Json(response, JsonRequestBehavior.AllowGet);
+        }
+
+        [HttpPost]
+        public JsonResult MarkAsRead(int notificationId)
+        {
+
+            var serializer = new JavaScriptSerializer();
+            var serializedObject = serializer.Serialize(new
+            {
+                NotificationId = notificationId,
+                IsRead = true
+            });
+
+            var request = WebRequest.CreateHttp("https://2nrmzup3ek.execute-api.us-west-2.amazonaws.com/PayrollNotificationStage");
+            request.Method = "PUT";
+            request.AllowWriteStreamBuffering = false;
+            request.ContentType = "application/json";
+            request.Accept = "Accept=application/json";
+            request.SendChunked = false;
+            request.ContentLength = serializedObject.Length;
+            using (var writer = new StreamWriter(request.GetRequestStream()))
+            {
+                writer.Write(serializedObject);
+            }
+            var response = request.GetResponse() as HttpWebResponse;
+
+            return Json("success");
+
         }
 
         private static async Task<NotificationComponentModel> GetExternalResponse()
@@ -97,14 +129,16 @@ namespace ReckonTwo.Controllers
 
             foreach (var model in notifications)
             {
-                model.NotificationTime = "Febraury 13, 2016";
+                model.NotificationTime = model.DateCreated.ToString("MMMM dd, yyyy");
                 model.Status = model.Status.ToLower();
             }
 
                 return new NotificationComponentModel
                 {
-                    Notifications = notifications.Take(5),
+                    Notifications = notifications.OrderByDescending(x => x.DateCreated).Take(5),
                     NumberOfNewNotifications = notifications.Count(x => !x.IsSeen)
+                    //Notifications = _notifications,
+                    //NumberOfNewNotifications = _notifications.Count(x => !x.IsSeen)
                 };
             }
             catch (Exception e)

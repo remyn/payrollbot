@@ -15,7 +15,20 @@
 
    $(document).on("click", ".star", function () {
         $(this).toggleClass("star-checked");
-    });
+   });
+
+   $(document).on("click", ".selected", function () {
+       $(this).removeClass("selected");
+       var currentVal = $("#notificationBadge").text();
+       $("#notificationBadge").text(currentVal-1);
+       var data = parseInt($(this).data("key"));
+       $.ajax({
+           url: "/Notification/MarkAsRead",
+           type: "POST",
+           data: JSON.stringify ({ notificationId: data }),
+           contentType: "application/json; charset=utf-8"
+       });
+   });
 
    $(document).on("click", ".ckbox label", function () {
         $(this).parents("tr").find("input").toggleClass("checked");

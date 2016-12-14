@@ -1,3 +1,4 @@
+using System;
 using Newtonsoft.Json;
 
 namespace ReckonTwo.Models
@@ -15,7 +16,8 @@ namespace ReckonTwo.Models
 
         public bool IsStarred { get; set; }
 
-        [JsonProperty("DateCreated")]
+        //[JsonProperty("DateCreated")]
+        public DateTime DateCreated { get; set; }
         public string NotificationTime { get; set; }
         public string Title { get; set; }
 
