@@ -257,5 +257,10 @@ namespace ReckonTwo.Controllers
 
             return RedirectToAction("login", "home");
         }
+
+        public ActionResult French()
+        {
+            return View();
+        }
     }
 }

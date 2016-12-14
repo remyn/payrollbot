@@ -1,0 +1,132 @@
+﻿<style type="text/css" media="screen">
+    #RemoveListnumber {
+        list-style: none;
+    }
+</style>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="page-header">Speech to text</h1>
+            <ol class="breadcrumb">
+                <li>
+                    <a href="../">Home</a>
+                </li>
+                <li class="active">Speech to text</li>
+            </ol>
+            <h4>References:</h4>
+            <ul>
+                <li><a target="_blank" href="https://www.microsoft.com/cognitive-services/en-us/speech-api">Bing Text To Speech API</a></li>
+            </ul><br />
+            <ol id="RemoveListnumber">
+                <li>
+                    <span class="col-lg-2">
+                        <input type="button" onclick="start()" id="btnStartSpeaking" value="Start Speaking" />
+                    </span>
+                    <span class="col-lg-1">
+                        <input type="button" onclick="stop()" id="btnStop" value="Stop" />
+                    </span>
+                    <br> <br />
+                    <span>
+                        <textarea id="output" style='width: 400px; height: 200px'></textarea>
+                    </span>
+                </li>
+                <br>
+                <li class="col-lg-1">
+                      <input type="button" onclick="send()" id="btnSend" value="Send" />
+                </li>
+            </ol>
+        </div>
+    </div>
+</div>
+<script src="~/Scripts/speech.1.0.0.js" type="text/javascript"></script>
+<script type="text/javascript">
+        var client;
+
+        function getMode() {
+            return Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionMode.shortPhrase;
+        }
+
+        function getKey() {
+            return "881c7244987f41f9829839b79b4782a8";
+        }
+
+        function getLanguage() {
+            return "fr-fr";
+        }
+
+        function clearText() {
+            document.getElementById("output").value = "";
+        }
+
+        function extractResponse(response) {
+            if (response.length > 0) {
+                var splitArray = response.split(',');
+                return splitArray[1].split(':')[1].replace(/['"]+/g, '');
+            }
+            return "";
+        }
+
+        function setText(text) {
+            document.getElementById("output").value += text;
+        }
+
+        function getLuisConfig() {
+            var appid =""; //"luis_appid"
+            var subid = ""; //"luis_subid";
+
+            if (appid.length > 0 && subid.length > 0) {
+                return { appid: appid, subid: subid };
+            }
+
+            return null;
+        }
+
+        function toggleButtons(toggleFlag) {
+            $("#btnStartSpeaking").prop("disabled", toggleFlag);
+            $("#btnStop").prop("disabled", !toggleFlag);
+        }
+        function stop() {
+            client.endMicAndRecognition();
+            toggleButtons(false);
+        }
+
+        function start() {
+
+            var mode = getMode();
+            var luisCfg = getLuisConfig();
+
+            clearText();
+
+            if (luisCfg) {
+                client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClientWithIntent(
+                    getLanguage(),
+                    getKey(),
+                    luisCfg.appid,
+                    luisCfg.subid);
+            } else {
+                client = Microsoft.CognitiveServices.SpeechRecognition.SpeechRecognitionServiceFactory.createMicrophoneClient(
+                    mode,
+                    getLanguage(),
+                    getKey());
+            }
+            client.startMicAndRecognition();
+            toggleButtons(true);
+            setTimeout(function () {
+                client.endMicAndRecognition();
+                toggleButtons(false);
+            }, 5000);
+
+            client.onPartialResponseReceived = function (response) {
+                setText(response);
+            }
+
+            client.onFinalResponseReceived = function (response) {
+                console.log(JSON.stringify(response));
+                setText(extractResponse(JSON.stringify(response)));
+            }
+
+            client.onIntentReceived = function (response) {
+                setText(response);
+            };
+        }
+</script>
