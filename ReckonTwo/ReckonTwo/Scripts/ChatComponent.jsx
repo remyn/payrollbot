@@ -83,7 +83,7 @@ var MessageForm = React.createClass({
         return "en-us";
     },
     getKey: function () {
-        return "42d4e9b82b4e43108387e5458216ab00";
+        return "881c7244987f41f9829839b79b4782a8";
     },
     extractResponse: function (response) {
         if (response.length > 0) {
